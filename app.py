@@ -73,10 +73,10 @@ def process_edited_user(user_id):
 
     db.session.add(user)
     db.session.commit()
-
+    print('==============route called===============')
     return redirect('/users')
 
-@app.route('/users/<int:user_id>/delete', methods=['DELETE'])
+@app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user_by_id(user_id):
     #  Delete the user.
 

@@ -3,7 +3,8 @@
 {% block title %}Edit User{% endblock  %}
 
 {% block content %}
-<form action="/process_user" method="POST">
+<h2>Edit {{user.first_name}} {{user.last_name}}</h2>
+<form action="/users/{{user.id}}/edit" method="POST">
     <label for="first_name">First Name</label>
     <input id="first_name" type="text" name='first_name' placeholder='Enter a first name' required>
 
