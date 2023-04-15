@@ -18,7 +18,12 @@ class BloglyTests(TestCase):
         """Add sample user"""
         with app.app_context():
             User.query.delete()
-
+            with app.app_context():
+                user = User(first_name='Mo', last_name='Jo')
+                db.session.add(user)
+                db.session.commit()
+                self.user_id = user.id
+    
     def tearDown(self):
         """Clean Up"""
 
@@ -27,12 +32,7 @@ class BloglyTests(TestCase):
 
     def test_users(self):
         with app.test_client() as client:
-            with app.app_context():
-                user = User(first_name='Mo', last_name='Jo')
-                db.session.add(user)
-                db.session.commit()
-                self.user_id = user.id
-
+        
             res = client.get('/users')
             html = res.get_data(as_text=True)
 
@@ -54,12 +54,6 @@ class BloglyTests(TestCase):
 
     def test_edit_user(self):
         with app.test_client() as client:
-            with app.app_context():
-                user = User(first_name='Mo', last_name='Jo')
-                db.session.add(user)
-                db.session.commit()
-                self.user_id = user.id
-
             res = client.post(f'/users/{self.user_id}/edit', data={'first_name':'edited', 'last_name': 'user', 'image-url': ''})
             html = res.get_data(as_text = True)
 
@@ -74,12 +68,6 @@ class BloglyTests(TestCase):
 
     def test_delete_users(self):
         with app.test_client() as client:
-            with app.app_context():
-                user = User(first_name='Mo', last_name='Jo')
-                db.session.add(user)
-                db.session.commit()
-                self.user_id = user.id
-
             res = client.post('/users/1/delete', data={'user_id': 1})
             html = res.get_data(as_text=True)
 
