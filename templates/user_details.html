@@ -6,7 +6,7 @@
 {% block content %}
 
 <h2>{{user.first_name}} {{user.last_name}}</h2>
-<img src="" alt="">
+<a><img src="https://www.freeiconspng.com/uploads/profile-icon--golden-control-icons--softiconsm-18.png" width="120" alt="Profile Icon Transparent" /></a>
 
 <form action="/users/{{user.id}}/edit">
     <button>Edit</button>
@@ -15,6 +15,16 @@
 <form action="/users/{{user.id}}/delete" method="POST">
     <button>Delete</button>
 </form>
+
+<h3>Posts</h3>
+<ul>
+    {% for post in user.posts%}
+    <li>{{post.title}}</li>
+    {% endfor %}
+</ul>
+<button><a href="/users/{{user.id}}/posts/new">Add Post</a></button>
+
+
 
 
 {% endblock  %}
