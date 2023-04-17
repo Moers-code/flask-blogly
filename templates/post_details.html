@@ -7,9 +7,13 @@
 <h1>{{post.title}}</h1>
 <p>{{post.content}}</p>
 <p>By {{post.user.first_name}} {{post.user.last_name}}</p>
-<button><a href="/posts">Cancel</a></button>
-<button><a href="/edit_post">Edit</a></button>
-<form action="/delete_post" method="POST">
+<button><a href="/users/{{post.user.id}}">Cancel</a></button>
+
+<form action="/posts/{{post.id}}/edit">
+    <button>Edit</button>
+</form>
+
+<form action="/posts/{{post.id}}/delete" method="POST">
     <button>Delete</button>
 </form>
 

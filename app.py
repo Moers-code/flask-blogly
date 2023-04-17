@@ -104,7 +104,7 @@ def add_new_post(user_id):
     db.session.add(post)
     db.session.commit()
 
-    return redirect('/users')
+    return redirect(f'/users/{user.id}')
 
 @app.route('/posts/<int:post_id>')
 def get_post(post_id):
@@ -118,12 +118,12 @@ def show_edit_post(post_id):
     return render_template('edit_post.html', post = post)
 
 
-app.route('/posts/<int:post_id>/edit') 
-""" Handle editing of a post. Redirect back to the post view."""
+@app.route('/posts/<int:post_id>/edit', methods=['POST']) 
 def edit_post(post_id):
+    """ Handle editing of a post. Redirect back to the post view."""
     post = Post.query.get_or_404(post_id)
-    post.title = request.form['title']
-    post.content = request.form['content']
+    post.title = request.form['edit_title']
+    post.content = request.form['edit_content']
 
     db.session.add(post)
     db.session.commit()
@@ -131,13 +131,13 @@ def edit_post(post_id):
     return redirect(f'/posts/{post.id}')
 
 
-app.route('/posts/<int:post_id>/delete', methods=['POST'])
-""":*** Delete the post."""
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
+    """Delete the post."""
     post = Post.query.get_or_404(post_id)
-
+    user_id = post.user.id
     db.session.delete(post)
     db.session.commit()
 
-    return redirect('/users')
+    return redirect(f'/users/{user_id}')
 
