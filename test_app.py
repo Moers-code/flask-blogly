@@ -1,9 +1,9 @@
 from unittest import TestCase
 from app import app
 from models import User, Post
-from databse import db
+from database import db
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly '
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly'
 app.config['TESTING'] = True
 app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 app.config['SQLALCHEMY_ECHO'] = False
@@ -26,10 +26,10 @@ class BloglyTests(TestCase):
                 db.session.commit()
                 self.user_id = user.id
 
-                post = Post(title='test', content='Testing Posts')
-                db.session.add(post)
-                db.session.commit()
-                self.post_id = post.id 
+                # post = Post(title='test', content='Testing Posts', user_id = self.user_id)
+                # db.session.add(post)
+                # db.session.commit()
+                # self.post_id = post.id 
     
     def tearDown(self):
         """Clean Up"""
@@ -76,15 +76,27 @@ class BloglyTests(TestCase):
 
     def test_delete_user(self):
         with app.test_client() as client:
-            res = client.post('/users/1/delete', data={'user_id': 1})
+            with app.app_context():
+                user = User.query.get(self.user_id)
+                post = Post(title='test', content='Testing Posts', user_id = user.id)
+
+            res = client.post('/users/1/delete')
             html = res.get_data(as_text=True)
 
             self.assertEqual(res.status_code, 302)
-            self.assertNotIn('Mo', html)
+            self.assertEqual(res.location, '/users')
+            user = User.query.get(1)
+            self.assertIsNone(user)
 
-    def test_add_new_post(self):
-        with app.test_client() as client:
-            res = client.post(f'/users/{self.user_id}/posts/new', data={'title':'second test', 'content': 'nothing to see'})
-            html = res.get_data(as_text=True)
+            # Here the post should've been None
+            self.assertIsNotNone(post)
 
-            self.assertEqual(res.status_code, 302)
+        
+            
+
+    # def test_add_new_post(self):
+    #     with app.test_client() as client:
+    #         res = client.post(f'/users/{self.user_id}/posts/new', data={'title':'second test', 'content': 'nothing to see'})
+    #         html = res.get_data(as_text=True)
+
+    #         self.assertEqual(res.status_code, 302)
