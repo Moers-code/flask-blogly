@@ -25,11 +25,6 @@ class BloglyTests(TestCase):
                 db.session.add(user)
                 db.session.commit()
                 self.user_id = user.id
-
-                # post = Post(title='test', content='Testing Posts', user_id = self.user_id)
-                # db.session.add(post)
-                # db.session.commit()
-                # self.post_id = post.id 
     
     def tearDown(self):
         """Clean Up"""
@@ -79,19 +74,29 @@ class BloglyTests(TestCase):
             with app.app_context():
                 user = User.query.get(self.user_id)
                 post = Post(title='test', content='Testing Posts', user_id = user.id)
+                db.session.add(post)
+                db.session.commit()
 
-            res = client.post('/users/1/delete')
-            html = res.get_data(as_text=True)
+                res = client.post(f'/users/{self.user_id}/delete')
+                html = res.get_data(as_text=True)
 
-            self.assertEqual(res.status_code, 302)
-            self.assertEqual(res.location, '/users')
-            user = User.query.get(1)
-            self.assertIsNone(user)
+                self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.location, '/users')
+                user = User.query.get(self.user_id)
+                self.assertIsNone(user)
 
-            # Here the post should've been None
-            self.assertIsNotNone(post)
+                post = Post.query.filter_by(id = post.id).first()
+                self.assertIsNone(post)
 
-        
+    # def test_add_new_post(self):
+    #     with app.test_client() as client:
+
+    #         res = client.post(f'/users/{self.user_id}/posts/new', data={'title': 'testing Post', 'content': 'Edit Post in Tests', 'user_id':'{self.user_id}'})
+    #         html = res.get_data(as_text=True)
+                
+
+            
+                
             
 
     # def test_add_new_post(self):
