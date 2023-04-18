@@ -107,7 +107,6 @@ class BloglyTests(TestCase):
 
                 res = client.post(f'/posts/{post.id}/edit', data={'title': 'testing', 'content': 'testing content'})
                 
-
                 self.assertEqual(res.status_code, 302)
                 self.assertEqual(res.location, f'/posts/{post.id}')
 
@@ -124,11 +123,11 @@ class BloglyTests(TestCase):
                 db.session.add(post)
                 db.session.commit()
                 
-
                 res = client.post(f'/posts/{post.id}/delete')
                 
                 self.assertEqual(res.status_code, 302)
-
                 deleted_post = Post.query.filter_by(id = post.id).first()
-
                 self.assertIsNone(deleted_post)
+                self.assertEqual(res.location, f'/users/{self.user_id}')
+                
+
