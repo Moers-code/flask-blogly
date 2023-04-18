@@ -88,20 +88,47 @@ class BloglyTests(TestCase):
                 post = Post.query.filter_by(id = post.id).first()
                 self.assertIsNone(post)
 
+    # throwing error!!
     # def test_add_new_post(self):
     #     with app.test_client() as client:
+    #         with app.app_context():
 
-    #         res = client.post(f'/users/{self.user_id}/posts/new', data={'title': 'testing Post', 'content': 'Edit Post in Tests', 'user_id':'{self.user_id}'})
-    #         html = res.get_data(as_text=True)
+    #             res = client.post('/users/1/posts/new', data={'title': 'testing Post', 'content': 'Edit Post in Tests', 'user_id':1})
+    #             html = res.get_data(as_text=True)
+
+    #             self.assertEqual(res.status_code, 302)
+                
+    def test_edit_post(self):
+        with app.test_client() as client:
+            with app.app_context():
+                post = Post(title='new Title', content= 'new Content')
+                db.session.add(post)
+                db.session.commit()
+
+                res = client.post(f'/posts/{post.id}/edit', data={'title': 'testing', 'content': 'testing content'})
                 
 
-            
+                self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.location, f'/posts/{post.id}')
+
+                res = client.get(res.location)
+                html = res.get_data(as_text=True)
+
+                self.assertIn('<p>testing content</p>', html)
                 
-            
 
-    # def test_add_new_post(self):
-    #     with app.test_client() as client:
-    #         res = client.post(f'/users/{self.user_id}/posts/new', data={'title':'second test', 'content': 'nothing to see'})
-    #         html = res.get_data(as_text=True)
+    def test_delete_post(self):
+        with app.test_client() as client:
+            with app.app_context():
+                post = Post(title='new Title', content= 'new Content', user_id = self.user_id)  
+                db.session.add(post)
+                db.session.commit()
+                
 
-    #         self.assertEqual(res.status_code, 302)
+                res = client.post(f'/posts/{post.id}/delete')
+                
+                self.assertEqual(res.status_code, 302)
+
+                deleted_post = Post.query.filter_by(id = post.id).first()
+
+                self.assertIsNone(deleted_post)

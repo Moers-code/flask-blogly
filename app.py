@@ -73,7 +73,6 @@ def process_edited_user(user_id):
     user.last_name = request.form['last_name']
     user.image_url = request.form['image-url']
 
-    db.session.add(user)
     db.session.commit()
     
     return redirect('/users')
@@ -124,10 +123,9 @@ def show_edit_post(post_id):
 def edit_post(post_id):
     """ Handle editing of a post. Redirect back to the post view."""
     post = Post.query.get_or_404(post_id)
-    post.title = request.form['edit_title']
-    post.content = request.form['edit_content']
+    post.title = request.form['title']
+    post.content = request.form['content']
 
-    db.session.add(post)
     db.session.commit()
 
     return redirect(f'/posts/{post.id}')
