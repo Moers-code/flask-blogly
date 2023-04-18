@@ -1,13 +1,14 @@
 """Blogly application."""
 
 from flask import Flask, render_template, request, redirect
-from models import db, connect_db, User, Post
+from models import connect_db, User, Post
 from flask_debugtoolbar import DebugToolbarExtension
+from database import db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 
 app.config['SECRET_KEY'] = 'welfknlewnf'
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
@@ -78,7 +79,7 @@ def process_edited_user(user_id):
     return redirect('/users')
 
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
-def delete_user_by_id(user_id):
+def delete_user(user_id):
     #  Delete the user.
 
     user = User.query.get_or_404(user_id)
@@ -91,6 +92,7 @@ def delete_user_by_id(user_id):
 @app.route('/users/<int:user_id>/posts/new')
 def new_post_page(user_id):
     user = User.query.get_or_404(user_id)
+
     return render_template('add_post.html', user = user)
 
 @app.route('/users/<int:user_id>/posts/new', methods=['POST'])
@@ -100,7 +102,7 @@ def add_new_post(user_id):
     title = request.form['title']
     content = request.form['content']
 
-    post = Post(title = title, content = content, user = user)
+    post = Post(title = title, content = content, user=user)
     db.session.add(post)
     db.session.commit()
 

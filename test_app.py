@@ -1,6 +1,7 @@
 from unittest import TestCase
 from app import app
-from models import db, User
+from models import User, Post
+from databse import db
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly '
 app.config['TESTING'] = True
@@ -18,11 +19,17 @@ class BloglyTests(TestCase):
         """Add sample user"""
         with app.app_context():
             User.query.delete()
+            Post.query.delete()
             with app.app_context():
                 user = User(first_name='Mo', last_name='Jo')
                 db.session.add(user)
                 db.session.commit()
                 self.user_id = user.id
+
+                post = Post(title='test', content='Testing Posts')
+                db.session.add(post)
+                db.session.commit()
+                self.post_id = post.id 
     
     def tearDown(self):
         """Clean Up"""
@@ -30,7 +37,7 @@ class BloglyTests(TestCase):
         with app.app_context():
             db.session.rollback()
 
-    def test_users(self):
+    def test_get_users(self):
         with app.test_client() as client:
         
             res = client.get('/users')
@@ -39,7 +46,8 @@ class BloglyTests(TestCase):
             self.assertEqual(res.status_code, 200)
             self.assertIn('Mo', html)
 
-    def test_new_user(self):
+
+    def test_process_new_user(self):
         with app.test_client() as client:
             
             res = client.post('/users/new', data={'first_name': 'Jax', 'last_name':'Yo', 'image-url': ''})
@@ -52,7 +60,7 @@ class BloglyTests(TestCase):
             html = res.get_data(as_text=True)
             self.assertIn('Jax Yo', html)
 
-    def test_edit_user(self):
+    def test_process_edited_user(self):
         with app.test_client() as client:
             res = client.post(f'/users/{self.user_id}/edit', data={'first_name':'edited', 'last_name': 'user', 'image-url': ''})
             html = res.get_data(as_text = True)
@@ -66,10 +74,17 @@ class BloglyTests(TestCase):
             self.assertIn('edited', html)
 
 
-    def test_delete_users(self):
+    def test_delete_user(self):
         with app.test_client() as client:
             res = client.post('/users/1/delete', data={'user_id': 1})
             html = res.get_data(as_text=True)
 
             self.assertEqual(res.status_code, 302)
             self.assertNotIn('Mo', html)
+
+    def test_add_new_post(self):
+        with app.test_client() as client:
+            res = client.post(f'/users/{self.user_id}/posts/new', data={'title':'second test', 'content': 'nothing to see'})
+            html = res.get_data(as_text=True)
+
+            self.assertEqual(res.status_code, 302)
