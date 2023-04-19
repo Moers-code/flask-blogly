@@ -1,6 +1,6 @@
 from unittest import TestCase
 from app import app
-from models import User, Post
+from models import User, Post, connect_db
 from database import db
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly'
@@ -9,6 +9,7 @@ app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 app.config['SQLALCHEMY_ECHO'] = False
 
 with app.app_context():
+    connect_db(app)
     db.drop_all()
     db.create_all()
 

@@ -39,7 +39,7 @@ class Post(db.Model):
                         nullable = False)
     
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     
 
 def connect_db(app):
