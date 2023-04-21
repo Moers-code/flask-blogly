@@ -9,8 +9,12 @@
     <input type="text" id="title" name="title" required>
 
     <label for="content">Content</label>
-    <input type="text" id="content" name="content" required>
-    <button><a href="/users/{{user.id}}">Cancel</a></button>
+    <textarea id="content" name="content" required></textarea>
+    <!-- iterate over tags and add them to label and input -->
+    <label for="{{tag.name}}">{{tag.name}}</label>
+    <input type="checkbox" id="{{tag.name}}"name="tags_group">
+
+    <button onclick="window.location.href='/users/{{user.id}}'">Cancel</button>
     <button>Add</button>
 </form>
 {% endblock %}

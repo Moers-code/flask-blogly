@@ -40,7 +40,26 @@ class Post(db.Model):
     
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    tags = db.relationship('Tag', secondary = 'posts_tags', backref = 'posts')
     
+
+    
+class Tag(db.Model):
+    """Tags Table"""
+
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    name = db.Column(db.Text, nullable = False)
+
+class PostTag(db.Model):
+    """PostTag Table"""
+
+    __tablename__ = 'posts_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id', ondelete='CASCADE'), primary_key=True)
+
 
 def connect_db(app):
     db.app = app

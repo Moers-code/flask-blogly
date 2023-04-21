@@ -11,8 +11,10 @@
     <input type="text" id="title" name="title" placeholder = '{{post.title}}'required>
 
     <label for="content">Post Content</label>
-    <input type="text" id="content" name="content" placeholder ='{{post.content}}' required>
-    <button><a href="/posts/{{post.user.id}}">Cancel</a></button>
+    <textarea id="content" name="content" placeholder ='{{post.content}}' required></textarea>
+    <button onclick="window.location.href ='/posts/{{post.user.id}}'">Cancel</button>
+    <label for="{{tag.name}}">{{tag.name}}</label>
+    <input type="checkbox" id="{{tag.name}}" name="{{tag.name}}">
     <button>Edit</button>
 </form>
 
