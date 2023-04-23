@@ -10,11 +10,12 @@
 
     <label for="content">Content</label>
     <textarea id="content" name="content" required></textarea>
-    <!-- iterate over tags and add them to label and input -->
+    {% for tag in tags %}
     <label for="{{tag.name}}">{{tag.name}}</label>
-    <input type="checkbox" id="{{tag.name}}"name="tags_group">
-
+    <input type="checkbox" id="{{tag.name}}" name="tags_group" value='{{tag.name}}'>
+    {% endfor %}
     <button onclick="window.location.href='/users/{{user.id}}'">Cancel</button>
     <button>Add</button>
 </form>
+
 {% endblock %}

@@ -1,6 +1,6 @@
 """Blogly application."""
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from models import connect_db, User, Post, Tag, PostTag
 from flask_debugtoolbar import DebugToolbarExtension
 from database import db
@@ -91,8 +91,9 @@ def delete_user(user_id):
 @app.route('/users/<int:user_id>/posts/new')
 def new_post_page(user_id):
     user = User.query.get_or_404(user_id)
+    tags = Tag.query.all()
 
-    return render_template('add_post.html', user = user)
+    return render_template('add_post.html', user = user, tags=tags)
 
 @app.route('/users/<int:user_id>/posts/new', methods=['POST'])
 def add_new_post(user_id):
@@ -100,17 +101,25 @@ def add_new_post(user_id):
 
     title = request.form['title']
     content = request.form['content']
+    tag_group = request.form.getlist('tags_group')
+    
+    post = Post(title = title, content = content, user_id=user_id)
 
-    post = Post(title = title, content = content, user=user)
+    for tag_name in tag_group:
+        tag = Tag.query.filter_by(name = tag_name).first()
+        post.tags.append(tag)
+
     db.session.add(post)
     db.session.commit()
-
+    
     return redirect(f'/users/{user.id}')
 
 @app.route('/posts/<int:post_id>')
 def get_post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post_details.html', post = post)
+    tags = post.tags
+    print(tags)
+    return render_template('post_details.html', post = post, tags = tags)
 
 @app.route('/posts/<int:post_id>/edit')
 def show_edit_post(post_id):
@@ -151,18 +160,22 @@ def tag_details(tag_id):
     tag = Tag.query.get_or_404(tag_id)
     return render_template('show_tag.html', tag=tag)
 
-@app.route('/tags/new')
+@app.route('/tags/new', methods=['GET'])
 def new_tag():
     return render_template('create_tag.html')
 
 @app.route('/tags/new', methods=['POST'])
 def create_tag():
-    new_tag = request.form['new_tag']
+    tag_name = request.form['new_tag']
 
-    tag = Tag(name = new_tag)
-    db.session.add(tag)
-    db.session.commit()
+    tag = Tag.query.filter_by(name = tag_name).first()
 
+    if tag is None:
+
+        tag = Tag(name = tag_name)
+        db.session.add(tag)
+        db.session.commit()
+    
     return redirect('/tags')
 
 @app.route('/tags/<int:tag_id>/edit')

@@ -13,8 +13,10 @@
     <label for="content">Post Content</label>
     <textarea id="content" name="content" placeholder ='{{post.content}}' required></textarea>
     <button onclick="window.location.href ='/posts/{{post.user.id}}'">Cancel</button>
+    {% for tag in tags %}
     <label for="{{tag.name}}">{{tag.name}}</label>
     <input type="checkbox" id="{{tag.name}}" name="{{tag.name}}">
+    {% endfor %}
     <button>Edit</button>
 </form>
 
