@@ -9,4 +9,8 @@
     <li>{{post.title}}</li>
     {% endfor %}
 </ul>
+<form action="/tags/{{tag.id}}/delete" method="POST">
+    <button>Delete Tag</button>
+</form>
+<button onclick="window.location.href='/tags'">Back</button>
 {% endblock  %}

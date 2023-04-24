@@ -1,6 +1,6 @@
 from unittest import TestCase
 from app import app
-from models import User, Post, connect_db
+from models import User, Post, connect_db, Tag
 from database import db
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly'
@@ -89,15 +89,14 @@ class BloglyTests(TestCase):
                 post = Post.query.filter_by(id = post.id).first()
                 self.assertIsNone(post)
 
-    # throwing error!!
-    # def test_add_new_post(self):
-    #     with app.test_client() as client:
-    #         with app.app_context():
+    def test_add_new_post(self):
+        with app.test_client() as client:
+            with app.app_context():
 
-    #             res = client.post('/users/1/posts/new', data={'title': 'testing Post', 'content': 'Edit Post in Tests', 'user_id':1})
-    #             html = res.get_data(as_text=True)
+                res = client.post('/users/1/posts/new', data={'title': 'testing Post', 'content': 'Edit Post in Tests', 'user_id':1})
+                html = res.get_data(as_text=True)
 
-    #             self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.status_code, 302)
                 
     def test_edit_post(self):
         with app.test_client() as client:
@@ -132,3 +131,69 @@ class BloglyTests(TestCase):
                 self.assertEqual(res.location, f'/users/{self.user_id}')
                 
 
+    def test_get_tags(self):
+        with app.test_client() as client:
+            with app.app_context():
+                tag = Tag(name = 'new Tag')
+                tag_two = Tag(name = 'another Tag')
+                db.session.add(tag)
+                db.session.add(tag_two)
+                db.session.commit()
+
+                res = client.get('/tags')
+                html = res.get_data(as_text=True)
+
+                self.assertEqual(res.status_code, 200)
+                self.assertIn('new Tag', html)
+
+    
+    def test_create_tag(self):
+        with app.test_client() as client:
+            with app.app_context():
+                res = client.post('/tags/new', data={'new_tag':'test tag'})
+                
+
+                self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.location, '/tags')
+
+                res = client.get('/tags')
+                html = res.get_data(as_text=True)
+
+                self.assertEqual(res.status_code, 200)
+                self.assertIn('test tag', html)
+
+    def test_edit_tag(self):
+        with app.test_client() as client:
+            with app.app_context():
+                tag = Tag(name = 'new tag')
+                db.session.add(tag)
+                db.session.commit()
+
+                res = client.post(f'/tags/{tag.id}/edit', data={'edit_tag': 'edited tag'})
+
+                self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.location, '/tags')
+
+                res = client.get('/tags')
+                html = res.get_data(as_text=True)
+
+                self.assertEqual(res.status_code, 200)
+                self.assertIn('edited tag', html)
+    
+    def test_delete_tag(self):
+        with app.test_client() as client:
+            with app.app_context():
+                test_tag = Tag(name='new test tag')
+                db.session.add(test_tag)
+                db.session.commit()
+
+                res = client.post(f'tags/{test_tag.id}/delete')
+
+                self.assertEqual(res.status_code, 302)
+                self.assertEqual(res.location, '/tags')
+
+                res = client.get('/tags')
+                html = res.get_data(as_text=True)
+
+                self.assertEqual(res.status_code, 200)
+                self.assertNotIn('new test tag', html)

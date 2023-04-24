@@ -6,7 +6,8 @@
 
 <h1>{{post.title}}</h1>
 <p>{{post.content}}</p>
-<p>By {{post.user.first_name}} {{post.user.last_name}} Add date of creation</p>
+<p>By {{post.user.first_name}} {{post.user.last_name}}</p>
+<p>Posted on: {{post.created_at.strftime('%d %B, %Y')}}</p>
 
 
 <div>

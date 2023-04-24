@@ -6,10 +6,10 @@
 <h2>Edit {{user.first_name}} {{user.last_name}}</h2>
 <form action="/users/{{user.id}}/edit" method="POST">
     <label for="first_name">First Name</label>
-    <input id="first_name" type="text" name='first_name' placeholder='Enter a first name' required>
+    <input id="first_name" type="text" name='first_name' placeholder='{{user.first_name}}' required>
 
     <label for="last_name">Last Name</label>
-    <input id="last_name" type="text" name='last_name' placeholder='Enter a last name' required>
+    <input id="last_name" type="text" name='last_name' placeholder='{{user.last_name}}' required>
 
     <label for="image-url">Image URL</label>
     <input id="image-url" type="url" name='image-url' placeholder = 'Provide an image of this user'>
