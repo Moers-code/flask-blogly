@@ -10,21 +10,21 @@
 <p>Posted on: {{post.created_at.strftime('%d %B, %Y')}}</p>
 
 
-<div>
-    <h6>Tags:</h6>
+<div class="tags-div">
+    <h4>Tags:</h4>
     {% for tag in tags %}
-    <button onclick="window.location.href='/tags/{{tag.id}}'">{{tag.name}}</button>
+    <button class="tags" onclick="window.location.href='/tags/{{tag.id}}'">{{tag.name}} </button>
     {% endfor %}
 </div>
 
-<button onclick="window.location.href='/users/{{post.user.id}}'">Cancel</button>
+<button class="cancel" onclick="window.location.href='/users/{{post.user.id}}'">Cancel</button>
 
 <form action="/posts/{{post.id}}/edit">
-    <button>Edit</button>
+    <button class="edit">Edit</button>
 </form>
 
 <form action="/posts/{{post.id}}/delete" method="POST">
-    <button>Delete</button>
+    <button class="delete">Delete</button>
 </form>
 
 {% endblock  %}

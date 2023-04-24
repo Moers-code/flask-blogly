@@ -9,19 +9,19 @@
 <a><img src="https://www.freeiconspng.com/uploads/profile-icon--golden-control-icons--softiconsm-18.png" width="120" alt="Profile Icon Transparent" /></a>
 
 <form action="/users/{{user.id}}/edit">
-    <button>Edit</button>
+    <button class="edit">Edit</button>
 </form>
 
 <form action="/users/{{user.id}}/delete" method="POST">
-    <button>Delete</button>
+    <button class="delete">Delete</button>
 </form>
 
 <h3>Posts</h3>
 <ul>
     {% for post in user.post%}
-    <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+    <li onclick="window.location.href='/posts/{{post.id}}'">{{post.title}}</li>
     {% endfor %}
 </ul>
-<button onclick="window.location.href='/users/{{user.id}}/posts/new'">Add Post</button>
-<button onclick="window.location.href='/users'">Back</button>
+<button class="add" onclick="window.location.href='/users/{{user.id}}/posts/new'">Add Post</button>
+<button class="cancel" onclick="window.location.href='/users'">Back</button>
 {% endblock  %}

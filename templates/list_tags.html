@@ -8,11 +8,11 @@
 
 <ul>
     {% for tag in tags %}
-    <li><a href='/tags/{{tag.id}}'>{{tag.name}}</a></li>
+    <li onclick="window.location.href='/tags/{{tag.id}}'">{{tag.name}}</li>
     {% endfor %}
 </ul>
 
 
-<button onclick="window.location.href='/tags/new'">Add Tag</button>
-<button onclick="window.location.href='/users'">Back to Users</button>
+<button class="add" onclick="window.location.href='/tags/new'">Add Tag</button>
+<button class="cancel" onclick="window.location.href='/users'">Back to Users</button>
 {% endblock  %}

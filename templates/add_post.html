@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Add Post{% endblock %}
+
 {% block content %}
 
 <h1>Add Post for {{user.first_name}} {{user.last_name}}</h1>
@@ -14,8 +15,8 @@
     <label for="{{tag.name}}">{{tag.name}}</label>
     <input type="checkbox" id="{{tag.name}}" name="tags_group" value='{{tag.name}}'>
     {% endfor %}
-    <button onclick="window.location.href='/users/{{user.id}}'">Cancel</button>
-    <button>Add</button>
+    <button class="cancel" onclick="window.location.href='/users/{{user.id}}'">Cancel</button>
+    <button class="add">Add</button>
 </form>
 
 {% endblock %}

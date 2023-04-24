@@ -6,11 +6,12 @@
 <h1>{{tag.name}}</h1>
 <ul>
     {% for post in tag.posts %}
-    <li>{{post.title}}</li>
+    <li onclick="window.location.href='/posts/{{post.id}}'">{{post.title}}</li>
     {% endfor %}
 </ul>
+<button class="edit" onclick="window.location.href='/tags/{{tag.id}}/edit'">Edit</button>
 <form action="/tags/{{tag.id}}/delete" method="POST">
-    <button>Delete Tag</button>
+    <button class="delete">Delete Tag</button>
 </form>
-<button onclick="window.location.href='/tags'">Back</button>
+<button class="cancel" onclick="window.location.href='/tags'">Back</button>
 {% endblock  %}
